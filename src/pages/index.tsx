@@ -1,9 +1,8 @@
 import styles from '../styles/Home.module.css';
 import { Inter } from '@next/font/google'
 import { FormEvent, useContext, useState } from 'react';
-import { parseCookies } from 'nookies'
 import { AuthContext } from '@/contexts/AuthContext';
-import { GetServerSideProps } from 'next';
+import { withSSRGuest } from '@/utils/withSSRGuest';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -33,19 +32,8 @@ export default function Home() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const cookies = parseCookies(ctx);
-
-  if (cookies['nextauth.token']) {
-    return {
-      redirect: {
-        destination: '/dashboard',
-        permanent: false,
-      }
-    }
-  }
-  
+export const getServerSideProps = withSSRGuest(async (ctx) => {
   return {
     props: {}
   }
-}
+});
